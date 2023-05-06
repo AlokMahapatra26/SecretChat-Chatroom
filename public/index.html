@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>SecretChat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <body>
+    <div class="container">
+
+    <div class="top__section">
+      <i class="fa-solid fa-mask fa-2xl"></i>
+      <h3>Secret Chat | by alok</h3>
+      <details>
+        <summary>Setup connection</summary>
+        
+        <input type="text" id="room-id" placeholder="Enter room ID">
+        <input type="text" id="user" placeholder="Enter name">
+        <button id="join-button">connect</button>
+        <button id="end-button">end session</button>
+      </details>
+      <a href="about.html" id="privacy_policy">about</a>
+      <a href="howtouse.html" id="user__manual">guide</a>
+      
+    </div>
+   
+
+    <div id="chat-box"></div>
+
+    <div class="bottom__section">
+      <input type="text" id="message-input" placeholder="Type a message" >
+    <button id="send-button"><i class="fa-regular fa-paper-plane fa-2xl"></i></button>
+    </div>
+    
+
+  </div>
+
+    <!-- javascript -->
+  
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      
+      const socket = io();
+      
+      
+      socket.on('room', (roomId) => {
+        document.getElementById('room-id').value = roomId;
+      });
+
+
+      document.getElementById('end-button').addEventListener('click' , ()=>{
+        location.reload();
+      })
+  
+      document.getElementById('join-button').addEventListener('click', () => {
+        const roomId = document.getElementById('room-id').value.trim();
+        if (roomId !== '') {
+          socket.emit('roomChange', roomId);
+        }
+        scrollToBottom()
+        alert("Connected !!!")
+      });
+      const chatBox = document.getElementById('chat-box');
+      socket.on('message', (message) => {
+        
+        const messageElement = document.createElement('p');
+        // const userElement = document.crateElement('h3');
+        messageElement.textContent = `  ${message}`;
+        // userElement.textContent = username;
+        chatBox.appendChild(messageElement);
+        // chatBox.appendChild(userElement);
+        scrollToBottom()
+      });
+
+      
+  
+      document.getElementById('send-button').addEventListener('click', () => {
+        const messageInput = document.getElementById('message-input');
+        const username = document.getElementById('user').value;
+        const message = `${username} :  ${messageInput.value.trim()}`;
+        if (message !== '') {
+          socket.emit('message', message);
+          messageInput.value = '';
+        }
+        scrollToBottom()
+      });
+
+
+      function scrollToBottom(){
+    chatBox.scrollTop = chatBox.scrollHeight;
+           }
+    </script>
+  </body>
+  
+</body>
+</html>
