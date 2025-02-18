@@ -11,9 +11,9 @@ app.use(express.static(__dirname + '/public'));
 
 
 function generateRoomId() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'ALOK';
     let roomId = '';
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       roomId += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return roomId;
@@ -68,3 +68,5 @@ io.on('connection', (socket) => {
 server.listen(PORT , ()=>{
     console.log(`listening on port number ${PORT}`);
 })
+
+
